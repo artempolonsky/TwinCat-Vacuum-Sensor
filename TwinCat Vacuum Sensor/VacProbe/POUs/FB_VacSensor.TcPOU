@@ -1,0 +1,152 @@
+﻿<?xml version="1.0" encoding="utf-8"?>
+<TcPlcObject Version="1.1.0.1">
+  <POU Name="FB_VacSensor" Id="{6669ef5d-a310-4634-b4fe-400854489f9b}" SpecialFunc="None">
+    <Declaration><![CDATA[(* 
+  This function block implements double polling of the ITR90 vacuum sensor.
+  To retrieve the results, call getValues(RsValue=>, AnValue=>, Status=>):
+
+    RsValue: UINT value from the RS232 output, received via EL6001
+    AnValue: UINT value from the analog output, received via EL3072
+    Status: data readiness and errors reported; see the tVacStatus type for details
+
+  Error bits in Status reflect all error conditions reported by the sensor, and they accumulate.
+  Use clearRsErrors and clearAnErrors functions to reset them.
+
+  Absence of RS232 reports for more than 1 second is also treated as an error.
+  Modify RS_TIMEOUT to change the timeout duration.
+*)
+
+FUNCTION_BLOCK FB_VacSensor
+VAR_INPUT
+END_VAR
+VAR_OUTPUT
+END_VAR
+VAR
+   fbReceive : ReceiveByte;
+   fbReset   : ComReset;
+ 
+   anStatus AT %I* : INT; 
+   anValue  AT %I* : INT;
+     
+     RxSysBuffer : ComBuffer;
+   
+	 RsWatchdog : TON;
+	 
+     RsState : INT := 0;
+	 RsRecBuffer : tRsOut_ITR90;
+	 
+	 VacStatus    : tVacStatus;
+	 VacAnValue  : UINT := 16#FFFF;
+	 VacRsValue  : UINT := 16#FFFF;
+	 
+   tmrTest : TON;	 
+END_VAR
+VAR CONSTANT
+	 RS_TIMEOUT : TIME := T#1S;	
+END_VAR
+
+]]></Declaration>
+    <Implementation>
+      <ST><![CDATA[_readByRs();
+_readByAn();]]></ST>
+    </Implementation>
+    <Method Name="_readByAn" Id="{167c0393-aaa3-4a10-9ef9-ff3d76c8abff}">
+      <Declaration><![CDATA[METHOD PRIVATE _readByAn 
+VAR_INPUT
+END_VAR
+]]></Declaration>
+      <Implementation>
+        <ST><![CDATA[IF anStatus.0  THEN VacStatus.anErr.0 := 1; END_IF
+IF anStatus.1  THEN VacStatus.anErr.1 := 1; END_IF
+IF anStatus.6  THEN VacStatus.anErr.2 := 1; END_IF  
+IF anStatus.14 THEN VacStatus.anErr.3 := 1; END_IF ]]></ST>
+      </Implementation>
+    </Method>
+    <Method Name="_readByRs" Id="{8605c73a-e4cc-40e3-b192-3acb275f6f87}">
+      <Declaration><![CDATA[METHOD PRIVATE _readByRs
+VAR_INPUT
+END_VAR
+VAR
+   chksum: INT;
+   rsdone : BOOL; 
+   rserror : ComError_t;
+END_VAR
+]]></Declaration>
+      <Implementation>
+        <ST><![CDATA[rsWatchdog(IN := TRUE, PT := RS_TIMEOUT);
+IF rsWatchdog.Q THEN VacStatus.rsErr.0 := 1; END_IF 
+
+fbReceive(RxBuffer := RxSysBuffer, 
+          ReceivedByte => RsRecBuffer[RsState+1],
+          ByteReceived => rsdone, 
+	      Error => rserror);
+
+IF NOT (rsdone AND rserror=COMERROR_NOERROR) THEN RETURN; END_IF	
+
+RsState := RsState + 1;
+ 
+CASE RsState OF
+	1: IF RsRecBuffer[RsState] <> 7 THEN RsState := 0; END_IF
+	2: IF RsRecBuffer[RsState] <> 5 THEN RsState := 0; END_IF
+	
+	  (* gets bytes 3..8 *)
+	
+	9: RsState := 0;
+
+	   chksum := RsRecBuffer[2] + RsRecBuffer[3] + RsRecBuffer[4] +
+                 RsRecBuffer[5] + RsRecBuffer[6] + RsRecBuffer[7] + RsRecBuffer[8];
+   
+       IF INT_TO_BYTE(chksum) <> RsRecBuffer[9] THEN RETURN; END_IF
+
+       CASE SHR(RsRecBuffer[4],4) OF
+          0: rsWatchdog(IN := FALSE);
+             VacStatus.rsBusy := FALSE;  
+	      5: VacStatus.rsErr.1 := 1;
+	      8: VacStatus.rsErr.2 := 1;
+	      9: VacStatus.rsErr.3 := 1;
+	   ELSE	 VacStatus.rsErr.7 := 1;
+	   END_CASE
+	   
+       VacRsValue  := RsRecBuffer[6] + SHL(BYTE_TO_UINT(RsRecBuffer[5]),8);
+END_CASE]]></ST>
+      </Implementation>
+    </Method>
+    <Method Name="clrAnErrors" Id="{fd39e170-fcbd-4b7c-819f-dee13a36f35e}">
+      <Declaration><![CDATA[METHOD clrAnErrors
+VAR_INPUT
+END_VAR
+]]></Declaration>
+      <Implementation>
+        <ST><![CDATA[VacStatus.anErr := 0;]]></ST>
+      </Implementation>
+    </Method>
+    <Method Name="clrRsErrors" Id="{878ea45e-aad5-45a2-9d28-950f3852f244}">
+      <Declaration><![CDATA[METHOD clrRsErrors
+VAR_INPUT
+END_VAR
+]]></Declaration>
+      <Implementation>
+        <ST><![CDATA[VacStatus.rsErr  := 0;
+VacStatus.rsBusy := TRUE;
+rsWatchdog(IN := FALSE);
+]]></ST>
+      </Implementation>
+    </Method>
+    <Method Name="getValues" Id="{48ca151a-fae4-470a-8a43-e05276e49314}">
+      <Declaration><![CDATA[METHOD getValues
+VAR_INPUT
+END_VAR
+VAR_OUTPUT
+	RsValue : UINT;
+	AnValue : UINT;
+	Status  : tVacStatus;
+END_VAR
+]]></Declaration>
+      <Implementation>
+        <ST><![CDATA[Status  := VacStatus;
+RsValue := VacRsValue; 
+AnValue := VacAnValue;]]></ST>
+      </Implementation>
+    </Method>
+  </POU>
+</TcPlcObject>

@@ -1,0 +1,7 @@
+﻿<?xml version="1.0" encoding="utf-8"?>
+<TcPlcObject Version="1.1.0.1">
+  <DUT Name="tRsOut_ITR90" Id="{c1d1dda4-abca-47c8-bd2b-466b1f38d4b1}">
+    <Declaration><![CDATA[TYPE tRsOut_ITR90 : ARRAY[1..9] OF byte; END_TYPE
+]]></Declaration>
+  </DUT>
+</TcPlcObject>

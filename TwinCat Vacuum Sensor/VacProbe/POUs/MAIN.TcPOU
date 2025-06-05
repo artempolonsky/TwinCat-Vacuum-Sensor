@@ -1,0 +1,13 @@
+﻿<?xml version="1.0" encoding="utf-8"?>
+<TcPlcObject Version="1.1.0.1">
+  <POU Name="MAIN" Id="{8930809c-2430-4d4a-8075-59855ac3ebfc}" SpecialFunc="None">
+    <Declaration><![CDATA[PROGRAM MAIN
+VAR
+	vacSensor : FB_VacSensor;
+END_VAR
+]]></Declaration>
+    <Implementation>
+      <ST><![CDATA[vacSensor();]]></ST>
+    </Implementation>
+  </POU>
+</TcPlcObject>

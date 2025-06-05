@@ -1,0 +1,18 @@
+﻿<?xml version="1.0" encoding="utf-8"?>
+<TcPlcObject Version="1.1.0.1">
+  <POU Name="SerialControl" Id="{f75aaac4-215f-4fc6-bfd3-3f9b3d71cb7a}" SpecialFunc="None">
+    <Declaration><![CDATA[PROGRAM SerialControl
+VAR
+END_VAR
+]]></Declaration>
+    <Implementation>
+      <ST><![CDATA[EL6001.serialCommCtrl(
+	Mode := SERIALLINEMODE_EL6_22B,
+	pComIn := ADR(EL6001.COMin_EL6001_MASTER),
+	SizeComIn := SIZEOF(EL6001.COMin_EL6001_MASTER),
+	pComOut := ADR(EL6001.COMout_EL6001_MASTER),
+	TxBuffer := EL6001.TxBuffer_MASTER,
+	RxBuffer := EL6001.RxBuffer_MASTER);]]></ST>
+    </Implementation>
+  </POU>
+</TcPlcObject>

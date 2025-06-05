@@ -1,0 +1,13 @@
+﻿<?xml version="1.0" encoding="utf-8"?>
+<TcPlcObject Version="1.1.0.1">
+  <GVL Name="EL6001" Id="{4244ba2f-cfad-4396-9fae-1556310bd4b3}">
+    <Declaration><![CDATA[{attribute 'qualified_only'}
+VAR_GLOBAL
+    COMin_EL6001_MASTER AT %I*  : EL6inData22B;
+	COMout_EL6001_MASTER AT %Q*  : EL6outData22B;
+    RxBuffer_MASTER 			: ComBuffer;
+	TxBuffer_MASTER 			: ComBuffer;
+	serialCommCtrl              : SerialLineControl;
+END_VAR]]></Declaration>
+  </GVL>
+</TcPlcObject>

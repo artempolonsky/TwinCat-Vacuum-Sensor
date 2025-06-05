@@ -1,0 +1,16 @@
+﻿<?xml version="1.0" encoding="utf-8"?>
+<TcPlcObject Version="1.1.0.1">
+  <Task Name="FastTask" Id="{44261eee-b562-4572-a6a8-3576adde6931}">
+    <!--CycleTime in micro seconds.-->
+    <CycleTime>1000</CycleTime>
+    <Priority>1</Priority>
+    <PouCall>
+      <Name>SerialControl</Name>
+    </PouCall>
+    <TaskFBGuid>{fa8ee716-392d-4e16-aed2-28be5e9ebf77}</TaskFBGuid>
+    <Fb_init>{d17e012f-991b-4724-bf32-cbc39e32359b}</Fb_init>
+    <Fb_exit>{18f2fc99-e6ba-43fc-9fb1-cb4f92465fd8}</Fb_exit>
+    <CycleUpdate>{576bc1da-6cd2-4587-961a-2fae10e0bfa1}</CycleUpdate>
+    <PostCycleUpdate>{04a0f2ab-a97c-4b83-b70a-3b1cf257314a}</PostCycleUpdate>
+  </Task>
+</TcPlcObject>

@@ -1,0 +1,25 @@
+﻿<?xml version="1.0" encoding="utf-8"?>
+<TcPlcObject Version="1.1.0.1">
+  <DUT Name="tVacStatus" Id="{857f6017-62b2-47a2-8059-8e3d88f4adc3}">
+    <Declaration><![CDATA[TYPE tVacStatus :
+STRUCT
+	rsBusy         : BOOL := 1;  // RS data not received yet, not an error
+	rsErr          : BYTE := 0;
+	  
+       // bit 0 : No signal for 1sec
+       // bit 1 : Pirani adjusted poorly 
+	   // bit 2 : BA error 
+	   // bit 3 : Pirani error
+	   // bit 7 : unknown error code  
+	   
+	anErr          : BYTE := 0;
+
+       // bit 0 : Underrange  
+       // bit 1 : Overrange
+       // bit 2 : General error (isn't it just over+underrange? idk)
+       // bit 3 : Internal error
+END_STRUCT
+END_TYPE
+]]></Declaration>
+  </DUT>
+</TcPlcObject>
