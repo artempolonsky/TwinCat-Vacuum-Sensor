@@ -152,7 +152,9 @@ X := UINT_TO_LREAL(VacRsValue);
 RsValue := EXPT(10, X/4000 - 12.5);
  
 X := UINT_TO_LREAL(VacAnValue)*16#7FFF/16#7736;
-AnValue := EXPT(10, X/4000 - 12.5);]]></ST>
+AnValue := EXPT(10, X/4000 - 12.5);
+
+(* Will it commit now? *)]]></ST>
       </Implementation>
     </Method>
   </POU>
