@@ -137,15 +137,22 @@ rsWatchdog(IN := FALSE);
 VAR_INPUT
 END_VAR
 VAR_OUTPUT
-	RsValue : UINT;
-	AnValue : UINT;
+	RsValue : LREAL;
+	AnValue : LREAL;
 	Status  : tVacStatus;
+END_VAR
+VAR
+    X : LREAL;	
 END_VAR
 ]]></Declaration>
       <Implementation>
         <ST><![CDATA[Status  := VacStatus;
-RsValue := VacRsValue; 
-AnValue := VacAnValue;]]></ST>
+
+X := UINT_TO_LREAL(VacRsValue); 
+RsValue := EXPT(10, X/4000 - 12.5);
+ 
+X := UINT_TO_LREAL(VacAnValue)*16#7FFF/16#7736;
+AnValue := EXPT(10, X/4000 - 12.5);]]></ST>
       </Implementation>
     </Method>
   </POU>

@@ -522,7 +522,7 @@
 		</System>
 		<Plc>
 			<Project GUID="{F3F276A3-959D-4F7C-A468-60C66D30C288}" Name="VacProbe" PrjFilePath="VacProbe\VacProbe.plcproj" TmcFilePath="VacProbe\VacProbe.tmc" ReloadTmc="true" AmsPort="851" FileArchiveSettings="#x000e" SymbolicMapping="true">
-				<Instance Id="#x08502000" TcSmClass="TComPlcObjDef" KeepUnrestoredLinks="2" TmcHash="{D30C8E23-D0DD-0886-2784-3891FC2F96FB}" TmcPath="VacProbe\VacProbe.tmc">
+				<Instance Id="#x08502000" TcSmClass="TComPlcObjDef" KeepUnrestoredLinks="2" TmcHash="{681DA81F-7922-B6E3-A3DF-CDF0AB95F465}" TmcPath="VacProbe\VacProbe.tmc">
 					<Name>VacProbe Instance</Name>
 					<CLSID ClassFactory="TcPlc30">{08500001-0000-0000-F000-000000000064}</CLSID>
 					<Vars VarGrpType="1" ContextId="1" AreaNo="16">
@@ -2333,8 +2333,6 @@
 		</Io>
 	</Project>
 	<Mappings>
-		<MappingInfo Identifier="{00000000-2001-0850-0120-500831000403}" Id="#x02030020"/>
-		<MappingInfo Identifier="{00000000-2002-0850-0020-500810000403}" Id="#x02030010"/>
 		<OwnerA Name="TIPC^VacProbe^VacProbe Instance">
 			<OwnerB Name="TIID^Device 1 (EtherCAT)^Term VacMaster (EK1100)^Term VacAn (EL3072)">
 				<Link VarA="PlcTask Inputs^MAIN.vacSensor.anStatus" VarB="AI Standard Channel 1^Status"/>
